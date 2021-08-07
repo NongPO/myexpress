@@ -50,14 +50,24 @@ async function handleEvent(event) {
   // });
   //SWITCH FOR MANY CASES
   switch (event.message.text) {
-    case "covid":
-      //let newText = "สวัสดี เราเป็นบอทรายงานสถิติโควิดนะ";
-      let data = await getTodayCovid();
-            let newText = JSON.stringify(data);
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text: newText,
-      });
+    case "test":
+      let payload_flex = require("./payloads/test.json");
+      let str_payload_flex = JSON.stringify(payload_flex);
+      let person = {
+        name: "Puwadon",
+        lastname: "Phang-O",
+      };
+      payload_flex = JSON.parse(eval("`" + str_payload_flex + "`"));
+      return client.replyMessage(event.replyToken, payload_flex);
+      break;
+
+    case "flex":
+      let payload_template = require("./payloads/template.json");
+      let str_payload_template = JSON.stringify(payload_template);
+      let vaccince = await getTodayCovid();
+      payload_template = JSON.parse(eval("`" + str_payload_template + "`"));
+      //console.log(payload_template);
+      return client.replyMessage(event.replyToken, payload_template);
       break;
     default:
       //console.log(event);
@@ -68,8 +78,8 @@ async function handleEvent(event) {
   }
 }
 async function getTodayCovid() {
-  let current_date = (new Date()).toISOString().split("T")[0];
-  let doc = await db.collection('vaccines').doc(current_date).get();
+  let current_date = new Date().toISOString().split("T")[0];
+  let doc = await db.collection("vaccines").doc(current_date).get();
   // if (!doc.exists) {
   //     console.log('No such document!');
   // } else {
